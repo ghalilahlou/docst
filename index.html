@@ -1,9 +1,9 @@
-<!DOCTYPE html>
+ç<!DOCTYPE html>
 <html lang="fr">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title data-translate="pageTitle">Ysquare Consulting </title>
+  <title data-translate="pageTitle">Ysquare Consulting</title>
 
   <!-- Google Fonts -->
   <link
@@ -21,91 +21,119 @@
   />
 
   <style>
-    /* --- VARIABLES --- */
     :root {
       --dark-green: #1B3B2F;
       --medium-green: #2F5E4B;
       --light-green: #CFE8DC;
       --accent-green: #91B9A3;
       --white: #FFFFFF;
-      --black: #000000;
       --max-width: 1200px;
-
-      /* Couleurs supplémentaires */
-      --hero-overlay: rgba(0, 0, 0, 0.2);
+      --header-width: 220px;  /* largeur du header vertical */
     }
 
-    html {
-      scroll-behavior: smooth;
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
     }
-    body {
+
+    html, body {
       font-family: "Montserrat", sans-serif;
-      line-height: 1.6;
       background: var(--light-green);
       color: var(--dark-green);
-      margin: 0;
-      padding-top: 80px; /* espace pour le header fixe */
-      opacity: 0; /* pour l'effet fade-in */
+      scroll-behavior: smooth;
+      overflow-x: hidden;
+    }
+    body {
+      opacity: 0;
       transition: opacity 0.8s ease;
     }
     body.loaded {
       opacity: 1;
     }
 
-    /* --- HEADER FIXE & RÉTRACTABLE --- */
+    /* ===== HEADER VERTICAL ASSOMBRI ===== */
     header {
-      background: var(--dark-green);
-      color: var(--white);
       position: fixed;
       top: 0;
-      width: 100%;
-      z-index: 1000;
-      transition: padding 0.3s ease;
-      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-    }
-    header.shrink {
-      padding: 0.5rem 0;
-    }
-    .header-top {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      max-width: var(--max-width);
-      margin: 0 auto;
-      padding: 1rem;
-    }
-    /* Remplacement du logo par un titre cliquable */
-    .site-title {
-      font-size: 1.2rem;
-      font-weight: 600;
+      left: 0;
+      width: var(--header-width);
+      height: 100vh; /* plein écran en hauteur */
+      /* Assombrissement via RGBA */
+      background: rgba(27,59,47,0.8); 
       color: var(--white);
-      text-decoration: none;
-      transition: color 0.3s ease;
-    }
-    .site-title:hover {
-      color: var(--accent-green);
+      z-index: 1000;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 1rem;
+      box-shadow: 2px 0 5px rgba(0,0,0,0.2);
     }
 
+    /* Logo cliquable + overlay contact */
+    .logo-container {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      cursor: pointer;
+      margin-bottom: 2rem;
+    }
+    .logo-container img {
+      width: 80px;
+      transition: transform 0.3s ease;
+    }
+    .logo-container img:hover {
+      transform: scale(1.1);
+    }
+    .contact-overlay {
+      display: none;
+      position: absolute;
+      top: 90px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--white);
+      color: var(--dark-green);
+      padding: 0.5rem 1rem;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+      border-radius: 4px;
+      font-size: 0.9rem;
+      white-space: nowrap;
+    }
+    .logo-container.show-overlay .contact-overlay {
+      display: block;
+    }
+
+    /* Sélecteur de langue */
+    .language-switcher {
+      margin-bottom: 2rem;
+    }
     .language-switcher select {
-      background: var(--dark-green);
+      background: rgba(0,0,0,0.4);
       color: var(--white);
       border: 1px solid var(--accent-green);
       border-radius: 4px;
-      padding: 0.3rem 0.5rem;
-      cursor: pointer;
+      padding: 0.3rem;
+      font-size: 0.9rem;
+      transition: background 0.3s ease;
     }
+    .language-switcher select:hover {
+      background: rgba(0,0,0,0.6);
+    }
+
+    /* Navigation verticale */
     nav.main-nav {
+      flex: 1; /* occupe l’espace vertical restant */
       display: flex;
-      align-items: center;
+      flex-direction: column;
+      justify-content: center;
     }
     nav.main-nav ul {
       list-style: none;
       display: flex;
-      margin: 0;
-      padding: 0;
-    }
-    nav.main-nav ul li {
-      margin: 0 1rem;
+      flex-direction: column;
+      align-items: center;
+      gap: 2rem;
     }
     nav.main-nav ul li a {
       color: var(--white);
@@ -116,6 +144,8 @@
     nav.main-nav ul li a:hover {
       color: var(--accent-green);
     }
+
+    /* Menu mobile (masqué par défaut) */
     .mobile-menu {
       display: none;
     }
@@ -124,9 +154,9 @@
       border: 2px solid var(--white);
       color: var(--white);
       font-size: 1.2rem;
-      cursor: pointer;
       padding: 0.25rem 0.5rem;
       border-radius: 5px;
+      cursor: pointer;
       transition: background 0.3s ease;
     }
     #menu-toggle:hover {
@@ -134,191 +164,122 @@
       color: var(--dark-green);
     }
 
-    /* --- HERO SECTION --- */
-    .hero {
-      position: relative;
-      width: 100%;
-      height: 100vh;
-      overflow: hidden;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background: var(--light-green);
-      /* Ajout d'un léger dégradé en fond */
-      background: linear-gradient(
-        to bottom,
-        var(--light-green) 50%,
-        var(--accent-green) 100%
-      );
-    }
-    /* Overlay par-dessus le background pour un léger assombrissement */
-    .hero::before {
-      content: "";
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: var(--hero-overlay);
-      z-index: 0;
-    }
-
-    /* --- LOGO SCINDÉ AVEC EFFET PARALLAX / 3D --- */
-    .big-logo-container {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      width: 400px;
-      height: 400px;
-      transition: transform 1s ease;
-      pointer-events: none; /* Pour éviter que la souris ne l’affecte */
-      z-index: 1; /* Par-dessus l'overlay mais sous le texte Hero */
-      perspective: 1000px; /* Pour l’effet 3D */
-    }
-    .big-logo-left,
-    .big-logo-right {
-      position: absolute;
-      top: 0;
-      width: 50%;
-      height: 100%;
-      background-size: cover;
-      background-position: center;
-      transition: transform 1s ease;
-    }
-    .big-logo-left {
-      left: 0;
-      /* Remplacez par le vrai fichier de votre moitié gauche */
-      background-image: url("images/logo-left.png");
-      transform: translateX(50%) rotateY(10deg);
-    }
-    .big-logo-right {
-      right: 0;
-      /* Remplacez par le vrai fichier de votre moitié droite */
-      background-image: url("images/logo-right.png");
-      transform: translateX(-50%) rotateY(-10deg);
-    }
-    /* Quand on ajoute .split => on sépare le logo + on réduit un peu l’échelle */
-    .big-logo-container.split {
-      transform: translate(-50%, -50%) scale(0.8);
-    }
-    .big-logo-container.split .big-logo-left {
-      transform: translateX(0) rotateY(0);
-    }
-    .big-logo-container.split .big-logo-right {
-      transform: translateX(0) rotateY(0);
-    }
-
-    /* EFFET TILT AU SURVOL (facultatif) */
-    .big-logo-container:hover .big-logo-left {
-      transform: translateX(0) rotateY(5deg) scale(1.02);
-    }
-    .big-logo-container:hover .big-logo-right {
-      transform: translateX(0) rotateY(-5deg) scale(1.02);
-    }
-
-    /* --- CONTENU HERO (TEXTE) --- */
-    .hero-content {
-      position: relative;
-      z-index: 2;
-      background: rgba(255, 255, 255, 0.7);
+    /* ===== MAIN => Décalage pour laisser la place au header vertical ===== */
+    main {
+      margin-left: var(--header-width);
       padding: 2rem;
-      border-radius: 8px;
-      max-width: 600px;
-      text-align: center;
-      margin: 0 1rem;
-    }
-    .hero-content h1 {
-      margin-bottom: 1rem;
-      color: var(--dark-green);
     }
 
-    /* --- SECTIONS GÉNÉRALES --- */
+    /* SECTIONS TRANSPARENTES SUR FOND VERT */
     section {
-      width: 100%;
-      margin: 2rem auto 0 auto;
       max-width: var(--max-width);
-      padding: 2rem 1rem;
-      background: rgba(255, 255, 255, 0.7);
+      margin: 0 auto 40px auto;
+    }
+    .section-container {
+      background: rgba(255,255,255,0.15);
+      backdrop-filter: blur(6px);
+      border: 1px solid rgba(255,255,255,0.3);
+      padding: 1.5rem;
       border-radius: 8px;
-      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-      opacity: 0;
-      transform: translateY(20px);
-      transition: opacity 1s ease, transform 1s ease;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
     }
-    section.visible {
-      opacity: 1;
-      transform: translateY(0);
+    .section-container:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
     }
-    section h2 {
+    h1, h2, h3 {
+      text-align: center;
       margin-bottom: 1rem;
       color: var(--dark-green);
     }
-    section ul {
-      list-style: disc;
-      margin-left: 2rem;
+    p {
+      text-align: center;
+      line-height: 1.6;
       margin-bottom: 1rem;
     }
-
-    /* --- PROJETS --- */
-    #projects article {
-      margin-bottom: 1.5rem;
-      padding: 1rem;
-      border-left: 4px solid var(--accent-green);
-      background: rgba(255, 255, 255, 0.7);
-      border-radius: 4px;
+    ul {
+      max-width: 600px;
+      margin: 0 auto 1rem auto;
+      padding-left: 20px;
     }
-    #projects article h3 {
+    li {
       margin-bottom: 0.5rem;
-      color: var(--medium-green);
+    }
+
+    /* Projects card style */
+    .project-card {
+      background: rgba(255,255,255,0.25);
+      border-left: 6px solid var(--accent-green);
+      padding: 1rem;
+      border-radius: 6px;
+      margin: 20px 0;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .project-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
     }
     .project-header {
       display: flex;
       align-items: center;
       gap: 1rem;
-      margin-bottom: 0.5rem;
+      margin-bottom: 10px;
     }
-    .project-header img.project-logo {
-      width: 50px;
-      height: auto;
+    .project-logo {
+      width: 70px;
+      flex-shrink: 0;
     }
 
-    /* --- LOGO SLIDER --- */
-    .logo-slider {
-      margin-top: 2rem;
-      text-align: center;
-    }
-    .logo-slider h3 {
-      color: var(--dark-green);
-    }
-    .logo-slider .slider {
-      display: flex;
-      justify-content: center;
-      align-items: center;
+    /* SCROLLING LOGO SLIDER */
+    .trusted-section {
+      background: rgba(255,255,255,0.15);
+      backdrop-filter: blur(6px);
+      border: 1px solid rgba(255,255,255,0.3);
+      border-radius: 8px;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
       overflow: hidden;
-      gap: 1rem;
-      flex-wrap: wrap;
-      margin-top: 1rem;
+      padding: 1.5rem;
     }
-    .logo-slider .slider img {
-      width: 150px;
-      height: auto;
-      filter: grayscale(30%);
-      transition: filter 0.3s ease, transform 0.3s ease;
-      loading: lazy; /* Lazy load */
+    .trusted-section:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
     }
-    .logo-slider .slider img:hover {
+    .trusted-section h2 {
+      text-align: center;
+      margin-bottom: 1rem;
+    }
+    .marquee-container {
+      width: 100%;
+      overflow: hidden;
+      position: relative;
+    }
+    .marquee-track {
+      display: flex;
+      gap: 2rem;
+      animation: scroll-marquee 20s linear infinite;
+      align-items: center;
+    }
+    .marquee-track .logo {
+      width: 130px;
+      filter: grayscale(40%);
+      transition: transform 0.3s ease, filter 0.3s ease;
+    }
+    .marquee-track .logo:hover {
+      transform: scale(1.08);
       filter: none;
-      transform: scale(1.05);
+    }
+    @keyframes scroll-marquee {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(-50%); }
     }
 
-    /* --- FOOTER --- */
+    /* FOOTER */
     footer {
-      margin-top: 2rem;
+      margin-left: var(--header-width);
       background: linear-gradient(to right, var(--dark-green), var(--medium-green));
       color: var(--white);
-      padding: 2rem 1rem;
       text-align: center;
+      padding: 20px 10px;
     }
     .footer-content {
       max-width: var(--max-width);
@@ -328,21 +289,20 @@
       align-items: center;
       gap: 1rem;
     }
-    .footer-content .social-icons {
+    .social-icons {
       display: flex;
       gap: 1rem;
-      justify-content: center;
     }
-    .footer-content .social-icons a {
+    .social-icons a {
       color: var(--white);
       font-size: 1.8rem;
       transition: color 0.3s ease;
     }
-    .footer-content .social-icons a:hover {
+    .social-icons a:hover {
       color: var(--accent-green);
     }
 
-    /* --- BOUTON BACK-TO-TOP --- */
+    /* BACK-TO-TOP */
     #back-to-top {
       position: fixed;
       bottom: 30px;
@@ -353,17 +313,15 @@
       width: 60px;
       height: 60px;
       cursor: pointer;
-      display: none; /* caché par défaut */
+      display: none;
       align-items: center;
       justify-content: center;
-      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+      box-shadow: 0 2px 5px rgba(0,0,0,0.3);
       transition: background 0.3s ease;
-      z-index: 1000;
-      overflow: hidden;
+      z-index: 9999;
     }
     #back-to-top img {
       width: 80%;
-      height: auto;
       transition: transform 0.3s ease;
     }
     #back-to-top:hover img {
@@ -373,289 +331,209 @@
       background: var(--medium-green);
     }
 
-    /* --- RESPONSIVE --- */
+    /* RESPONSIVE */
     @media (max-width: 768px) {
-      .header-top {
-        flex-wrap: wrap;
+      :root {
+        --header-width: 180px; /* Réduit la barre latérale en mobile */
       }
       nav.main-nav ul {
-        display: none;
-        flex-direction: column;
-        align-items: center;
-        background: var(--dark-green);
-        margin-top: 1rem;
-        padding-bottom: 1rem;
+        gap: 1rem;
       }
-      .mobile-menu {
-        display: block;
-      }
-      .main-nav.open ul {
-        display: flex;
-      }
-      .hero {
-        height: auto;
-        padding: 2rem 1rem;
-      }
-      .big-logo-container {
-        width: 300px;
-        height: 300px;
-      }
-      footer {
-        text-align: center;
+      .marquee-track .logo {
+        width: 90px;
       }
     }
   </style>
 </head>
 <body>
-  <!-- HEADER -->
+  <!-- HEADER VERTICAL ASSOMBRI -->
   <header id="header">
-    <div class="header-top">
-      <!-- Titre du site à la place du logo -->
-      <a href="#home" class="site-title" data-translate="headerTitle">
-        Ysquare Consulting 
-      </a>
-      <!-- Sélecteur de langue -->
-      <div class="language-switcher">
-        <select id="lang-select" aria-label="Choisir la langue">
-          <option value="fr">Français</option>
-          <option value="en">English</option>
-        </select>
+    <!-- Logo cliquable avec overlay contact -->
+    <div class="logo-container" id="logoContainer">
+      <img src="images/image-03.png" alt="Logo Ysquare Consulting" data-translate="headerLogo" />
+      <div class="contact-overlay">
+        <p>Email: <a href="mailto:ysquare.cons@gmail.com">ysquare.cons@gmail.com</a></p>
+        <p>LinkedIn: <a href="https://www.linkedin.com/in/kenza-touimi-benjelloun-b8585892/?sendMessage=1" target="_blank">Profil</a></p>
       </div>
-      <!-- Navigation -->
-      <nav class="main-nav">
-        <ul>
-          <li><a href="#home" data-translate="navHome">Accueil</a></li>
-          <li><a href="#about" data-translate="navAbout">À propos</a></li>
-          <li><a href="#services" data-translate="navServices">Services</a></li>
-          <li><a href="#projects" data-translate="navProjects">Projets & Études de cas</a></li>
-          <li><a href="#contact" data-translate="navContact">Contact</a></li>
-        </ul>
-      </nav>
-      <!-- Menu mobile -->
-      <div class="mobile-menu">
-        <button id="menu-toggle" aria-label="Ouvrir le menu">&#9776;</button>
-      </div>
+    </div>
+
+    <!-- Sélecteur de langue -->
+    <div class="language-switcher">
+      <select id="lang-select" aria-label="Choisir la langue">
+        <option value="fr">Français</option>
+        <option value="en">English</option>
+      </select>
+    </div>
+
+    <!-- Navigation verticale -->
+    <nav class="main-nav">
+      <ul>
+        <li><a href="#home" data-translate="navHome">Accueil</a></li>
+        <li><a href="#about" data-translate="navAbout">À propos</a></li>
+        <li><a href="#services" data-translate="navServices">Services</a></li>
+        <li><a href="#projects" data-translate="navProjects">Projets & Études de cas</a></li>
+        <li><a href="#contact" data-translate="navContact">Contact</a></li>
+      </ul>
+    </nav>
+
+    <!-- Menu mobile (bouton) -->
+    <div class="mobile-menu">
+      <button id="menu-toggle" aria-label="Ouvrir le menu">&#9776;</button>
     </div>
   </header>
 
-  <!-- HERO avec logo scindé en deux -->
-  <section class="hero" id="home">
-    <!-- Conteneur du gros logo scindé -->
-    <div class="big-logo-container" id="bigLogo">
-      <div class="big-logo-left"></div>
-      <div class="big-logo-right"></div>
-    </div>
-
-    <div class="hero-content">
-      <h1 data-translate="homeTitle">Bridging Strategy, Technology & Execution</h1>
-      <p data-translate="homeP1">
-        Avec plus d'une décennie de leadership dans les transformations IT et data-driven, je me spécialise dans la conduite de projets à fort impact.
-      </p>
-      <p data-translate="homeP2">
-        Faisons de votre vision une feuille de route axée sur les résultats.
-      </p>
-    </div>
-  </section>
-
-  <!-- ABOUT -->
-  <section id="about">
-    <h2 data-translate="aboutTitle">A results-driven IT & data expert</h2>
-    <p data-translate="aboutP1">
-      J'ai bâti un solide palmarès en menant à bien des projets IT complexes et stratégiques, tant au niveau local qu'international. Mon expertise couvre :
-    </p>
-    <ul>
-      <li data-translate="aboutLi1">
-        Project & Change Management – Conduire des transformations digitales en douceur.
-      </li>
-      <li data-translate="aboutLi2">
-        Data Governance & Strategy – Structurer les données pour une meilleure prise de décision.
-      </li>
-      <li data-translate="aboutLi3">
-        SAP S/4HANA & ERP Implementations – Garantir l'excellence opérationnelle.
-      </li>
-      <li data-translate="aboutLi4">
-        Enterprise IT Ecosystem Optimization – Aligner la technologie sur les objectifs business.
-      </li>
-    </ul>
-    <p data-translate="aboutP2">
-      Ce qui me distingue ? Ma capacité à naviguer dans la complexité, à briser les silos et à initier un changement significatif.
-    </p>
-  </section>
-
-  <!-- SERVICES -->
-  <section id="services">
-    <h2 data-translate="servicesTitle">
-      Tailored solutions to accelerate your IT & data transformation
-    </h2>
-    <p data-translate="servicesP1">
-      J'offre des services de consulting sur-mesure pour aider les entreprises à optimiser leurs opérations et exploiter la puissance des données :
-    </p>
-    <ul>
-      <li data-translate="servicesLi1">
-        IT Project Management – De la planification à l'exécution.
-      </li>
-      <li data-translate="servicesLi2">
-        Data Governance & Strategy – Mettre en place des cadres robustes pour la conformité.
-      </li>
-      <li data-translate="servicesLi3">
-        SAP S/4HANA Implementation – Piloter des transformations en finance et logistique.
-      </li>
-      <li data-translate="servicesLi4">
-        Change Management – Accompagner les équipes dans l'adoption des nouveaux systèmes.
-      </li>
-      <li data-translate="servicesLi5">
-        Enterprise Architecture & IT Roadmap – Aligner la technologie aux objectifs business.
-      </li>
-    </ul>
-    <p data-translate="servicesP2">
-      Chaque engagement est pensé pour maximiser l'impact, réduire les risques et favoriser une croissance durable.
-    </p>
-  </section>
-
-  <!-- PROJECTS & CASE STUDIES -->
-  <section id="projects">
-    <h2 data-translate="projectsTitle">Turning challenges into success stories</h2>
-
-    <!-- Bolloré Logistics -->
-    <article>
-      <div class="project-header">
-        <img
-          src="images/image-01.png"
-          alt="Bolloré Logistics Logo"
-          class="project-logo"
-          loading="lazy"
-        />
-        <h3 data-translate="proj1Title">
-          Global SAP S/4HANA Implementation (Logistics & Supply Chain)
-        </h3>
+  <!-- CONTENU PRINCIPAL -->
+  <main>
+    <!-- SECTION HERO -->
+    <section id="home">
+      <div class="section-container">
+        <h1 data-translate="homeTitle">Bridging Strategy, Technology & Execution</h1>
+        <p data-translate="homeP1">
+          Avec plus d'une décennie de leadership dans les transformations IT et data-driven, je me spécialise dans la conduite de projets à fort impact.
+        </p>
+        <p data-translate="homeP2">
+          Faisons de votre vision une feuille de route axée sur les résultats.
+        </p>
       </div>
-      <ul>
-        <li data-translate="proj1Li1">
-          Responsable de la livraison IT d'un déploiement SAP S/4HANA FICO.
-        </li>
-        <li data-translate="proj1Li2">
-          Intégration harmonieuse avec les systèmes existants tout en améliorant l'efficacité.
-        </li>
-      </ul>
-    </article>
+    </section>
 
-    <!-- Sodexo -->
-    <article>
-      <div class="project-header">
-        <img
-          src="images/image-04.png"
-          alt="Sodexo Logo"
-          class="project-logo"
-          loading="lazy"
-        />
-        <h3 data-translate="proj2Title">
-          Data Governance Framework for a Service Industry Leader (Sodexo)
-        </h3>
+    <!-- SECTION ABOUT -->
+    <section id="about">
+      <div class="section-container">
+        <h2 data-translate="aboutTitle">A results-driven IT & data expert</h2>
+        <p data-translate="aboutP1">
+          J'ai bâti un solide palmarès en menant à bien des projets IT complexes et stratégiques, tant au niveau local qu'international. Mon expertise couvre :
+        </p>
+        <ul>
+          <li data-translate="aboutLi1">Project & Change Management – Conduire des transformations digitales en douceur.</li>
+          <li data-translate="aboutLi2">Data Governance & Strategy – Structurer les données pour une meilleure prise de décision.</li>
+          <li data-translate="aboutLi3">SAP S/4HANA & ERP Implementations – Garantir l'excellence opérationnelle.</li>
+          <li data-translate="aboutLi4">Enterprise IT Ecosystem Optimization – Aligner la technologie sur les objectifs business.</li>
+        </ul>
+        <p data-translate="aboutP2">
+          Ce qui me distingue ? Ma capacité à naviguer dans la complexité, à briser les silos et à initier un changement significatif.
+        </p>
       </div>
-      <ul>
-        <li data-translate="proj2Li1">
-          Conception et implémentation d'un modèle de gouvernance pour améliorer la qualité.
-        </li>
-        <li data-translate="proj2Li2">
-          Renforcement de la collaboration interfonctionnelle et amélioration de la prise de décision.
-        </li>
-      </ul>
-    </article>
+    </section>
 
-    <!-- Bolloré Logistics (encore) -->
-    <article>
-      <div class="project-header">
-        <img
-          src="images/image-01.png"
-          alt="Bolloré Logistics Logo"
-          class="project-logo"
-          loading="lazy"
-        />
-        <h3 data-translate="proj3Title">
-          IT Transformation for a Global Logistics Provider (Bolloré Logistics)
-        </h3>
+    <!-- SECTION SERVICES -->
+    <section id="services">
+      <div class="section-container">
+        <h2 data-translate="servicesTitle">Tailored solutions to accelerate your IT & data transformation</h2>
+        <p data-translate="servicesP1">
+          J'offre des services de consulting sur-mesure pour aider les entreprises à optimiser leurs opérations et exploiter la puissance des données :
+        </p>
+        <ul>
+          <li data-translate="servicesLi1">IT Project Management – De la planification à l'exécution.</li>
+          <li data-translate="servicesLi2">Data Governance & Strategy – Mettre en place des cadres robustes pour la conformité.</li>
+          <li data-translate="servicesLi3">SAP S/4HANA Implementation – Piloter des transformations en finance et logistique.</li>
+          <li data-translate="servicesLi4">Change Management – Accompagner les équipes dans l'adoption des nouveaux systèmes.</li>
+          <li data-translate="servicesLi5">Enterprise Architecture & IT Roadmap – Aligner la technologie aux objectifs business.</li>
+        </ul>
+        <p data-translate="servicesP2">
+          Chaque engagement est pensé pour maximiser l'impact, réduire les risques et favoriser une croissance durable.
+        </p>
       </div>
-      <ul>
-        <li data-translate="proj3Li1">
-          Définition et mise en œuvre d'une stratégie IT pour moderniser l'architecture d'entreprise.
-        </li>
-        <li data-translate="proj3Li2">
-          Mise en place de solutions IT évolutives pour soutenir les initiatives de digitalisation.
-        </li>
-      </ul>
-    </article>
+    </section>
 
-    <p data-translate="projectsP">
-      Je suis passionné par la résolution de défis complexes et par l'assurance que les solutions IT servent réellement les objectifs business.
-    </p>
-  </section>
-
-  <!-- CONTACT -->
-  <section id="contact">
-    <h2 data-translate="contactTitle">
-      Let’s connect and drive transformation together
-    </h2>
-    <p data-translate="contactP">
-      🚀 Vous recherchez un partenaire de confiance pour piloter vos initiatives IT et data ? Discutons de vos besoins.
-    </p>
-    <ul>
-      <li>
-        <img
-          src="images/email.png"
-          alt="Email Icon"
-          style="width: 20px; height: auto; margin-right: 8px;"
-        />
-        <span data-translate="contactEmailLabel">Email :</span>
-        <a href="mailto:ysquare.cons@gmail.com">ysquare.cons@gmail.com</a>
-      </li>
-      <li>
-        <img
-          src="images/linkedin.png"
-          alt="LinkedIn Icon"
-          style="width: 20px; height: auto; margin-right: 8px;"
-        />
-        <span data-translate="contactLinkedInLabel">LinkedIn :</span>
-        <a
-          href="https://www.linkedin.com/in/kenza-touimi-benjelloun-b8585892/?sendMessage=1"
-          target="_blank"
-          aria-label="LinkedIn direct message"
-        >
-          Kenza Touimi Benjelloun
-        </a>
-      </li>
-      <li>
-        <img
-          src="images/tel.png"
-          alt="Phone Icon"
-          style="width: 20px; height: auto; margin-right: 8px;"
-        />
-        Tel : +33 6 86 93 92 79
-      </li>
-    </ul>
-
-    <!-- Logo slider -->
-    <div class="logo-slider">
-      <h3 data-translate="trustedUs">They trusted us:</h3>
-      <div class="slider">
-        <img src="images/image-04.png" alt="Sodexo" loading="lazy" />
-        <img src="images/image-01.png" alt="Bolloré Logistics" loading="lazy" />
-        <img src="images/image-02.png" alt="Geodis" loading="lazy" />
-        <img
-          src="images/schneider-electric-logo.webp"
-          alt="Schneider Electric"
-          loading="lazy"
-        />
-        <img src="images/image-05.png" alt="ST Microelectronics" loading="lazy" />
+    <!-- SECTION PROJECTS -->
+    <section id="projects">
+      <div class="section-container">
+        <h2 data-translate="projectsTitle">Turning challenges into success stories</h2>
+        <!-- Projet 1 -->
+        <article class="project-card">
+          <div class="project-header">
+            <img src="images/image-02.png" alt="Logo SAP S/4HANA" class="project-logo" loading="lazy" />
+            <h3 data-translate="proj1Title">Global SAP S/4HANA Implementation (Logistics & Supply Chain)</h3>
+          </div>
+          <ul>
+            <li data-translate="proj1Li1">Responsable de la livraison IT d'un déploiement SAP S/4HANA FICO.</li>
+            <li data-translate="proj1Li2">Intégration harmonieuse avec les systèmes existants tout en améliorant l'efficacité.</li>
+          </ul>
+        </article>
+        <!-- Projet 2 -->
+        <article class="project-card">
+          <div class="project-header">
+            <img src="images/image-04.png" alt="Logo Sodexo" class="project-logo" loading="lazy" />
+            <h3 data-translate="proj2Title">Data Governance Framework for a Service Industry Leader (Sodexo)</h3>
+          </div>
+          <ul>
+            <li data-translate="proj2Li1">Conception et implémentation d'un modèle de gouvernance pour améliorer la qualité.</li>
+            <li data-translate="proj2Li2">Renforcement de la collaboration interfonctionnelle et amélioration de la prise de décision.</li>
+          </ul>
+        </article>
+        <!-- Projet 3 -->
+        <article class="project-card">
+          <div class="project-header">
+            <img src="images/image-01.png" alt="Logo Bolloré Logistics" class="project-logo" loading="lazy" />
+            <h3 data-translate="proj3Title">IT Transformation for a Global Logistics Provider (Bolloré Logistics)</h3>
+          </div>
+          <ul>
+            <li data-translate="proj3Li1">Définition et mise en œuvre d'une stratégie IT pour moderniser l'architecture d'entreprise.</li>
+            <li data-translate="proj3Li2">Mise en place de solutions IT évolutives pour soutenir les initiatives de digitalisation.</li>
+          </ul>
+        </article>
+        <p data-translate="projectsP">
+          Je suis passionné par la résolution de défis complexes et par l'assurance que les solutions IT servent réellement les objectifs business.
+        </p>
       </div>
-    </div>
-  </section>
+    </section>
 
-  <!-- FOOTER -->
+    <!-- SECTION "ILS NOUS FONT CONFIANCE" -->
+    <section class="trusted-section">
+      <h2 data-translate="trustedUs">Ils nous font confiance :</h2>
+      <div class="marquee-container">
+        <div class="marquee-track">
+          <!-- Logos répétés 2 fois pour un défilement continu -->
+          <img class="logo" src="images/image-04.png" alt="Sodexo" />
+          <img class="logo" src="images/image-01.png" alt="Bolloré Logistics" />
+          <img class="logo" src="images/image-02.png" alt="Geodis" />
+          <img class="logo" src="images/schneider-electric-logo.webp" alt="Schneider Electric" />
+          <img class="logo" src="images/image-05.png" alt="ST Microelectronics" />
+
+          <img class="logo" src="images/image-04.png" alt="Sodexo" />
+          <img class="logo" src="images/image-01.png" alt="Bolloré Logistics" />
+          <img class="logo" src="images/image-02.png" alt="Geodis" />
+          <img class="logo" src="images/schneider-electric-logo.webp" alt="Schneider Electric" />
+          <img class="logo" src="images/image-05.png" alt="ST Microelectronics" />
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION CONTACT -->
+    <section id="contact">
+      <div class="section-container">
+        <h2 data-translate="contactTitle">Let’s connect and drive transformation together</h2>
+        <p data-translate="contactP">
+          🚀 Vous recherchez un partenaire de confiance pour piloter vos initiatives IT et data ? Discutons de vos besoins.
+        </p>
+        <!-- Icônes seulement : email + LinkedIn, sans texte -->
+        <ul style="display: flex; justify-content: center; gap: 2rem;">
+          <li>
+            <!-- Icône email qui ouvre la messagerie (mailto) -->
+            <a href="mailto:ysquare.cons@gmail.com" aria-label="Envoyer un email">
+              <img src="images/email.png" alt="Email Icon" style="width: 40px; height: auto;" />
+            </a>
+          </li>
+          <li>
+            <!-- Icône LinkedIn qui redirige vers le profil -->
+            <a
+              href="https://www.linkedin.com/in/kenza-touimi-benjelloun-b8585892/?sendMessage=1"
+              target="_blank"
+              aria-label="Profil LinkedIn"
+            >
+              <img src="images/linkedin.png" alt="LinkedIn Icon" style="width: 40px; height: auto;" />
+            </a>
+          </li>
+        </ul>
+      </div>
+    </section>
+  </main>
+
+  <!-- ====== FOOTER ====== -->
   <footer>
     <div class="footer-content">
-      <p data-translate="footerText">
-        © 2025 Ysquare Consulting - Tous droits réservés.
-      </p>
+      <p data-translate="footerText">© 2025 Ysquare Consulting - Tous droits réservés.</p>
       <div class="social-icons">
         <a
           href="https://www.linkedin.com/in/kenza-touimi-benjelloun-b8585892/?sendMessage=1"
@@ -681,11 +559,19 @@
       const menuToggle = document.getElementById("menu-toggle");
       const mainNav = document.querySelector(".main-nav");
       const langSelect = document.getElementById("lang-select");
+      const logoContainer = document.getElementById("logoContainer");
 
-      // MENU MOBILE
+      // Menu mobile
       if (menuToggle && mainNav) {
         menuToggle.addEventListener("click", () => {
           mainNav.classList.toggle("open");
+        });
+      }
+
+      // Overlay contact au clic sur le logo
+      if (logoContainer) {
+        logoContainer.addEventListener("click", () => {
+          logoContainer.classList.toggle("show-overlay");
         });
       }
 
@@ -693,70 +579,43 @@
       const translations = {
         fr: {
           pageTitle: "Ysquare Consulting – Driving IT & Data Transformation",
-          headerTitle: "Ysquare Consulting – Driving IT & Data Transformation",
+          headerTitle: "Ysquare Consulting",
           navHome: "Accueil",
           navAbout: "À propos",
           navServices: "Services",
-          navProjects: "Projets & Études de cas",
+          navProjects: "Projets & Études",
           navContact: "Contact",
           homeTitle: "Relier la stratégie, la technologie et l’exécution",
-          homeP1:
-            "Avec plus d'une décennie de leadership dans les transformations IT et data-driven, je me spécialise dans la conduite de projets à fort impact.",
-          homeP2:
-            "Faisons de votre vision une feuille de route axée sur les résultats.",
+          homeP1: "Avec plus d'une décennie de leadership dans les transformations IT et data-driven, je me spécialise dans la conduite de projets à fort impact.",
+          homeP2: "Faisons de votre vision une feuille de route axée sur les résultats.",
           aboutTitle: "Un expert IT & data axé sur les résultats",
-          aboutP1:
-            "J'ai bâti un solide palmarès en menant à bien des projets IT complexes et stratégiques, tant au niveau local qu'international. Mon expertise couvre :",
-          aboutLi1:
-            "Project & Change Management – Conduire des transformations digitales en douceur.",
-          aboutLi2:
-            "Data Governance & Strategy – Structurer les données pour une meilleure prise de décision.",
-          aboutLi3:
-            "SAP S/4HANA & ERP Implementations – Garantir l'excellence opérationnelle.",
-          aboutLi4:
-            "Enterprise IT Ecosystem Optimization – Aligner la technologie sur les objectifs business.",
-          aboutP2:
-            "Ce qui me distingue ? Ma capacité à naviguer dans la complexité, à briser les silos et à initier un changement significatif.",
-          servicesTitle:
-            "Des solutions sur mesure pour accélérer votre transformation IT & data",
-          servicesP1:
-            "J'offre des services de consulting sur-mesure pour aider les entreprises à optimiser leurs opérations et exploiter la puissance des données :",
-          servicesLi1:
-            "IT Project Management – De la planification à l'exécution.",
-          servicesLi2:
-            "Data Governance & Strategy – Mettre en place des cadres robustes pour la conformité.",
-          servicesLi3:
-            "SAP S/4HANA Implementation – Piloter des transformations en finance et logistique.",
-          servicesLi4:
-            "Change Management – Accompagner les équipes dans l'adoption des nouveaux systèmes.",
-          servicesLi5:
-            "Enterprise Architecture & IT Roadmap – Aligner la technologie aux objectifs business.",
-          servicesP2:
-            "Chaque engagement est pensé pour maximiser l'impact, réduire les risques et favoriser une croissance durable.",
+          aboutP1: "J'ai bâti un solide palmarès en menant à bien des projets IT complexes et stratégiques, tant au niveau local qu'international. Mon expertise couvre :",
+          aboutLi1: "Project & Change Management – Conduire des transformations digitales en douceur.",
+          aboutLi2: "Data Governance & Strategy – Structurer les données pour une meilleure prise de décision.",
+          aboutLi3: "SAP S/4HANA & ERP Implementations – Garantir l'excellence opérationnelle.",
+          aboutLi4: "Enterprise IT Ecosystem Optimization – Aligner la technologie sur les objectifs business.",
+          aboutP2: "Ce qui me distingue ? Ma capacité à naviguer dans la complexité, à briser les silos et à initier un changement significatif.",
+          servicesTitle: "Des solutions sur mesure pour accélérer votre transformation IT & data",
+          servicesP1: "J'offre des services de consulting sur-mesure pour aider les entreprises à optimiser leurs opérations et exploiter la puissance des données :",
+          servicesLi1: "IT Project Management – De la planification à l'exécution.",
+          servicesLi2: "Data Governance & Strategy – Mettre en place des cadres robustes pour la conformité.",
+          servicesLi3: "SAP S/4HANA Implementation – Piloter des transformations en finance et logistique.",
+          servicesLi4: "Change Management – Accompagner les équipes dans l'adoption des nouveaux systèmes.",
+          servicesLi5: "Enterprise Architecture & IT Roadmap – Aligner la technologie aux objectifs business.",
+          servicesP2: "Chaque engagement est pensé pour maximiser l'impact, réduire les risques et favoriser une croissance durable.",
           projectsTitle: "Transformer les défis en succès concrets",
-          proj1Title:
-            "Mise en œuvre globale de SAP S/4HANA (Logistique & Supply Chain)",
-          proj1Li1:
-            "Responsable de la livraison IT d'un déploiement SAP S/4HANA FICO.",
-          proj1Li2:
-            "Intégration harmonieuse avec les systèmes existants tout en améliorant l'efficacité.",
-          proj2Title:
-            "Cadre de gouvernance des données pour un leader des services (Sodexo)",
-          proj2Li1:
-            "Conception et implémentation d'un modèle de gouvernance pour améliorer la qualité.",
-          proj2Li2:
-            "Renforcement de la collaboration interfonctionnelle et amélioration de la prise de décision.",
-          proj3Title:
-            "Transformation IT pour un acteur mondial de la logistique (Bolloré Logistics)",
-          proj3Li1:
-            "Définition et mise en œuvre d'une stratégie IT pour moderniser l'architecture d'entreprise.",
-          proj3Li2:
-            "Mise en place de solutions IT évolutives pour soutenir les initiatives de digitalisation.",
-          projectsP:
-            "Je suis passionné par la résolution de défis complexes et par l'assurance que les solutions IT servent réellement les objectifs business.",
+          proj1Title: "Global SAP S/4HANA Implementation (Logistics & Supply Chain)",
+          proj1Li1: "Responsable de la livraison IT d'un déploiement SAP S/4HANA FICO.",
+          proj1Li2: "Intégration harmonieuse avec les systèmes existants tout en améliorant l'efficacité.",
+          proj2Title: "Cadre de gouvernance des données pour un leader des services (Sodexo)",
+          proj2Li1: "Conception et implémentation d'un modèle de gouvernance pour améliorer la qualité.",
+          proj2Li2: "Renforcement de la collaboration interfonctionnelle et amélioration de la prise de décision.",
+          proj3Title: "Transformation IT pour un acteur mondial de la logistique (Bolloré Logistics)",
+          proj3Li1: "Définition et mise en œuvre d'une stratégie IT pour moderniser l'architecture d'entreprise.",
+          proj3Li2: "Mise en place de solutions IT évolutives pour soutenir les initiatives de digitalisation.",
+          projectsP: "Je suis passionné par la résolution de défis complexes et par l'assurance que les solutions IT servent réellement les objectifs business.",
           contactTitle: "Entrons en contact pour piloter la transformation ensemble",
-          contactP:
-            "🚀 Vous recherchez un partenaire de confiance pour piloter vos initiatives IT et data ? Discutons de vos besoins.",
+          contactP: "🚀 Vous recherchez un partenaire de confiance pour piloter vos initiatives IT et data ? Discutons de vos besoins.",
           contactEmailLabel: "Email :",
           contactLinkedInLabel: "LinkedIn :",
           contactLocationLabel: "Localisation :",
@@ -765,68 +624,43 @@
         },
         en: {
           pageTitle: "Ysquare Consulting – Driving IT & Data Transformation",
-          headerTitle: "Ysquare Consulting – Driving IT & Data Transformation",
+          headerTitle: "Ysquare Consulting",
           navHome: "Home",
           navAbout: "About",
           navServices: "Services",
-          navProjects: "Projects & Case Studies",
+          navProjects: "Projects",
           navContact: "Contact",
           homeTitle: "Bridging Strategy, Technology & Execution",
-          homeP1:
-            "With over a decade of leadership in IT and data-driven transformations, I specialize in high-impact projects.",
+          homeP1: "With over a decade of leadership in IT and data-driven transformations, I specialize in high-impact projects.",
           homeP2: "Let’s turn your vision into a results-driven roadmap.",
           aboutTitle: "A results-driven IT & data expert",
-          aboutP1:
-            "I have built a strong track record delivering complex IT projects at both local and international levels. My expertise spans:",
-          aboutLi1:
-            "Project & Change Management – Driving seamless digital transformations.",
-          aboutLi2:
-            "Data Governance & Strategy – Structuring data for better decision-making.",
-          aboutLi3:
-            "SAP S/4HANA & ERP Implementations – Ensuring operational excellence.",
-          aboutLi4:
-            "Enterprise IT Ecosystem Optimization – Aligning technology with business goals.",
-          aboutP2:
-            "What sets me apart? My ability to navigate complexity, break down silos, and drive meaningful change.",
-          servicesTitle:
-            "Tailored solutions to accelerate your IT & data transformation",
-          servicesP1:
-            "I offer end-to-end consulting services to help businesses streamline operations and unlock the power of data:",
+          aboutP1: "I have built a strong track record delivering complex IT projects at both local and international levels. My expertise spans:",
+          aboutLi1: "Project & Change Management – Driving seamless digital transformations.",
+          aboutLi2: "Data Governance & Strategy – Structuring data for better decision-making.",
+          aboutLi3: "SAP S/4HANA & ERP Implementations – Ensuring operational excellence.",
+          aboutLi4: "Enterprise IT Ecosystem Optimization – Aligning technology with business goals.",
+          aboutP2: "What sets me apart? My ability to navigate complexity, break down silos, and drive meaningful change.",
+          servicesTitle: "Tailored solutions to accelerate your IT & data transformation",
+          servicesP1: "I offer end-to-end consulting services to help businesses streamline operations and unlock the power of data:",
           servicesLi1: "IT Project Management – From planning to execution.",
-          servicesLi2:
-            "Data Governance & Strategy – Establishing robust frameworks for compliance.",
-          servicesLi3:
-            "SAP S/4HANA Implementation – Leading finance and logistics transformations.",
-          servicesLi4:
-            "Change Management – Ensuring teams adopt and embrace new systems effectively.",
-          servicesLi5:
-            "Enterprise Architecture & IT Roadmap – Aligning technology investments with business objectives.",
-          servicesP2:
-            "Each engagement is designed to maximize impact, mitigate risks, and drive sustainable growth.",
+          servicesLi2: "Data Governance & Strategy – Establishing robust frameworks for compliance.",
+          servicesLi3: "SAP S/4HANA Implementation – Leading finance and logistics transformations.",
+          servicesLi4: "Change Management – Ensuring teams adopt and embrace new systems effectively.",
+          servicesLi5: "Enterprise Architecture & IT Roadmap – Aligning technology investments with business objectives.",
+          servicesP2: "Each engagement is designed to maximize impact, mitigate risks, and drive sustainable growth.",
           projectsTitle: "Turning challenges into success stories",
-          proj1Title:
-            "Global SAP S/4HANA Implementation (Logistics & Supply Chain)",
-          proj1Li1:
-            "Led the IT delivery of an SAP S/4HANA FICO rollout.",
-          proj1Li2:
-            "Ensured smooth integration with existing systems while improving efficiency.",
-          proj2Title:
-            "Data Governance Framework for a Service Industry Leader (Sodexo)",
-          proj2Li1:
-            "Designed and implemented a governance model to enhance data quality and compliance.",
-          proj2Li2:
-            "Improved cross-functional collaboration and decision-making through structured governance.",
-          proj3Title:
-            "IT Transformation for a Global Logistics Provider (Bolloré Logistics)",
-          proj3Li1:
-            "Defined and executed an IT strategy to modernize enterprise architecture.",
-          proj3Li2:
-            "Deployed scalable IT solutions to support digitalization initiatives.",
-          projectsP:
-            "I thrive on solving highly complex challenges and ensuring IT solutions truly serve business objectives.",
+          proj1Title: "Global SAP S/4HANA Implementation (Logistics & Supply Chain)",
+          proj1Li1: "Led the IT delivery of an SAP S/4HANA FICO rollout.",
+          proj1Li2: "Ensured smooth integration with existing systems while improving efficiency.",
+          proj2Title: "Data Governance Framework for a Service Industry Leader (Sodexo)",
+          proj2Li1: "Designed and implemented a governance model to enhance data quality and compliance.",
+          proj2Li2: "Improved cross-functional collaboration and decision-making through structured governance.",
+          proj3Title: "IT Transformation for a Global Logistics Provider (Bolloré Logistics)",
+          proj3Li1: "Defined and executed an IT strategy to modernize enterprise architecture.",
+          proj3Li2: "Deployed scalable IT solutions to support digitalization initiatives.",
+          projectsP: "I thrive on solving highly complex challenges and ensuring IT solutions truly serve business objectives.",
           contactTitle: "Let’s connect and drive transformation together",
-          contactP:
-            "🚀 Looking for a trusted partner to lead your IT & data initiatives? I’d love to discuss your needs.",
+          contactP: "🚀 Looking for a trusted partner to lead your IT & data initiatives? I’d love to discuss your needs.",
           contactEmailLabel: "Email:",
           contactLinkedInLabel: "LinkedIn:",
           contactLocationLabel: "Location:",
@@ -835,80 +669,37 @@
         }
       };
 
-      // Gestion de la langue sélectionnée
       function setLanguage(lang) {
         const elements = document.querySelectorAll("[data-translate]");
-        elements.forEach((el) => {
+        elements.forEach(el => {
           const key = el.getAttribute("data-translate");
-          if (translations[lang][key]) {
-            el.textContent = translations[lang][key];
-          }
+          if (translations[lang][key]) el.textContent = translations[lang][key];
         });
-        // Titre de la page
         const pageTitle = document.querySelector("title[data-translate]");
         if (pageTitle && translations[lang].pageTitle) {
           pageTitle.textContent = translations[lang].pageTitle;
         }
       }
-
-      // Écouteur sur le sélecteur de langue
+      // Par défaut => Français
+      setLanguage("fr");
       langSelect.addEventListener("change", (e) => {
         setLanguage(e.target.value);
       });
-
-      // Par défaut, on initialise en FR
-      setLanguage("fr");
     });
 
-    // SCROLL EVENTS (header shrink, back-to-top, logo split, etc.)
+    // Back-to-top & overlay logic
     window.addEventListener("scroll", () => {
-      const header = document.getElementById("header");
       const backToTop = document.getElementById("back-to-top");
-      const bigLogoContainer = document.getElementById("bigLogo");
-
-      // Shrink du header si on scrolle un peu
-      if (window.scrollY > 50) {
-        header.classList.add("shrink");
-      } else {
-        header.classList.remove("shrink");
-      }
-
-      // Apparition du bouton Back-to-top
-      if (window.scrollY > 300) {
-        backToTop.style.display = "flex";
-      } else {
-        backToTop.style.display = "none";
-      }
-
-      // Séparation du logo à partir de 100px de scroll
-      if (window.scrollY > 100) {
-        bigLogoContainer.classList.add("split");
-      } else {
-        bigLogoContainer.classList.remove("split");
-      }
+      if (window.scrollY > 300) backToTop.style.display = "flex";
+      else backToTop.style.display = "none";
     });
-
-    // Action du bouton Back-to-top
     document.getElementById("back-to-top").addEventListener("click", () => {
       window.scrollTo({ top: 0, behavior: "smooth" });
     });
 
-    // Effet d'apparition (fade-in) des sections au chargement et au scroll
+    // Au chargement
     window.addEventListener("load", () => {
       document.body.classList.add("loaded");
-      const sections = document.querySelectorAll("section");
-
-      function revealSections() {
-        const triggerBottom = window.innerHeight * 0.9;
-        sections.forEach((section) => {
-          const rect = section.getBoundingClientRect();
-          if (rect.top < triggerBottom) {
-            section.classList.add("visible");
-          }
-        });
-      }
-      window.addEventListener("scroll", revealSections);
-      revealSections();
     });
   </script>
 </body>
