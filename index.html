@@ -1,9 +1,13 @@
-ç<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="fr">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title data-translate="pageTitle">Ysquare Consulting</title>
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/x-icon" href="images/favicon.ico" />
+  <link rel="shortcut icon" type="image/x-icon" href="images/favicon.ico" />
 
   <!-- Google Fonts -->
   <link
@@ -21,6 +25,9 @@
   />
 
   <style>
+    /* ------------------------
+       VARIABLES GLOBALES
+    ------------------------ */
     :root {
       --dark-green: #1B3B2F;
       --medium-green: #2F5E4B;
@@ -28,7 +35,7 @@
       --accent-green: #91B9A3;
       --white: #FFFFFF;
       --max-width: 1200px;
-      --header-width: 220px;  /* largeur du header vertical */
+      --header-width: 220px; /* largeur par défaut du header vertical */
     }
 
     * {
@@ -45,22 +52,23 @@
       overflow-x: hidden;
     }
     body {
-      opacity: 0;
+      opacity: 0; /* Pour effet de fade-in à l’arrivée */
       transition: opacity 0.8s ease;
     }
     body.loaded {
       opacity: 1;
     }
 
-    /* ===== HEADER VERTICAL ASSOMBRI ===== */
+    /* ------------------------
+       HEADER VERTICAL (DESKTOP)
+    ------------------------ */
     header {
       position: fixed;
       top: 0;
       left: 0;
       width: var(--header-width);
       height: 100vh; /* plein écran en hauteur */
-      /* Assombrissement via RGBA */
-      background: rgba(27,59,47,0.8); 
+      background: rgba(27,59,47,0.8); /* Assombrissement via RGBA */
       color: var(--white);
       z-index: 1000;
       display: flex;
@@ -70,7 +78,7 @@
       box-shadow: 2px 0 5px rgba(0,0,0,0.2);
     }
 
-    /* Logo cliquable + overlay contact */
+    /* Logo + overlay contact */
     .logo-container {
       position: relative;
       display: flex;
@@ -99,9 +107,12 @@
       border-radius: 4px;
       font-size: 0.9rem;
       white-space: nowrap;
+      opacity: 0;
+      transition: opacity 0.3s ease;
     }
     .logo-container.show-overlay .contact-overlay {
       display: block;
+      opacity: 1;
     }
 
     /* Sélecteur de langue */
@@ -121,7 +132,7 @@
       background: rgba(0,0,0,0.6);
     }
 
-    /* Navigation verticale */
+    /* Navigation verticale (desktop) */
     nav.main-nav {
       flex: 1; /* occupe l’espace vertical restant */
       display: flex;
@@ -145,9 +156,21 @@
       color: var(--accent-green);
     }
 
-    /* Menu mobile (masqué par défaut) */
+    /* ------------------------
+       MENU MOBILE (apparait sur petits écrans)
+    ------------------------ */
     .mobile-menu {
-      display: none;
+      display: none; /* caché par défaut, visible seulement en mobile */
+      align-items: center;
+      justify-content: space-between;
+      background: var(--dark-green);
+      color: var(--white);
+      padding: 0.5rem 1rem;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 1000;
     }
     #menu-toggle {
       background: none;
@@ -164,13 +187,44 @@
       color: var(--dark-green);
     }
 
-    /* ===== MAIN => Décalage pour laisser la place au header vertical ===== */
+    /* Le nav en mobile : on le place en overlay sur le côté droit (slide-in) */
+    nav.main-nav.mobile {
+      display: none; /* caché au démarrage */
+      flex-direction: column;
+      align-items: center;
+      position: fixed;
+      top: 60px; /* en dessous du bandeau mobile */
+      right: -180px; /* en dehors de l'écran à droite */
+      width: 180px;
+      height: calc(100% - 60px);
+      background: rgba(27,59,47,0.95);
+      z-index: 1001;
+      padding-top: 2rem;
+      transition: right 0.3s ease;
+    }
+    nav.main-nav.mobile.open {
+      right: 0; /* slide-in */
+      display: flex;
+    }
+
+    /* Ajustement des liens en mobile */
+    nav.main-nav.mobile ul {
+      gap: 1rem;
+    }
+
+    /* ------------------------
+       MAIN
+       (décalage pour laisser la place au header vertical en desktop)
+    ------------------------ */
     main {
       margin-left: var(--header-width);
       padding: 2rem;
+      transition: margin-left 0.3s ease;
     }
 
-    /* SECTIONS TRANSPARENTES SUR FOND VERT */
+    /* ------------------------
+       SECTIONS
+    ------------------------ */
     section {
       max-width: var(--max-width);
       margin: 0 auto 40px auto;
@@ -182,11 +236,21 @@
       padding: 1.5rem;
       border-radius: 8px;
       transition: transform 0.3s ease, box-shadow 0.3s ease;
+      /* Pour l'effet fade-in */
+      opacity: 0;
+      transform: translateY(30px);
     }
     .section-container:hover {
       transform: translateY(-5px);
       box-shadow: 0 4px 12px rgba(0,0,0,0.1);
     }
+    /* Quand la section apparaît à l’écran, on lui ajoute la classe .fade-in */
+    .section-container.fade-in {
+      opacity: 1;
+      transform: translateY(0);
+      transition: opacity 0.8s ease, transform 0.8s ease;
+    }
+
     h1, h2, h3 {
       text-align: center;
       margin-bottom: 1rem;
@@ -206,7 +270,7 @@
       margin-bottom: 0.5rem;
     }
 
-    /* Projects card style */
+    /* Projets */
     .project-card {
       background: rgba(255,255,255,0.25);
       border-left: 6px solid var(--accent-green);
@@ -224,13 +288,17 @@
       align-items: center;
       gap: 1rem;
       margin-bottom: 10px;
+      flex-wrap: wrap;
+      justify-content: center; /* Pour bien centrer sur mobile */
     }
     .project-logo {
       width: 70px;
       flex-shrink: 0;
     }
 
-    /* SCROLLING LOGO SLIDER */
+    /* ------------------------
+       SECTION MARQUEE (logos)
+    ------------------------ */
     .trusted-section {
       background: rgba(255,255,255,0.15);
       backdrop-filter: blur(6px);
@@ -239,6 +307,13 @@
       transition: transform 0.3s ease, box-shadow 0.3s ease;
       overflow: hidden;
       padding: 1.5rem;
+      opacity: 0;
+      transform: translateY(30px);
+    }
+    .trusted-section.fade-in {
+      opacity: 1;
+      transform: translateY(0);
+      transition: opacity 0.8s ease, transform 0.8s ease;
     }
     .trusted-section:hover {
       transform: translateY(-5px);
@@ -258,6 +333,7 @@
       gap: 2rem;
       animation: scroll-marquee 20s linear infinite;
       align-items: center;
+      will-change: transform;
     }
     .marquee-track .logo {
       width: 130px;
@@ -273,13 +349,16 @@
       100% { transform: translateX(-50%); }
     }
 
-    /* FOOTER */
+    /* ------------------------
+       FOOTER
+    ------------------------ */
     footer {
       margin-left: var(--header-width);
       background: linear-gradient(to right, var(--dark-green), var(--medium-green));
       color: var(--white);
       text-align: center;
       padding: 20px 10px;
+      transition: margin-left 0.3s ease;
     }
     .footer-content {
       max-width: var(--max-width);
@@ -302,7 +381,9 @@
       color: var(--accent-green);
     }
 
-    /* BACK-TO-TOP */
+    /* ------------------------
+       BOUTON BACK-TO-TOP
+    ------------------------ */
     #back-to-top {
       position: fixed;
       bottom: 30px;
@@ -313,7 +394,7 @@
       width: 60px;
       height: 60px;
       cursor: pointer;
-      display: none;
+      display: none; /* affiché uniquement après scroll */
       align-items: center;
       justify-content: center;
       box-shadow: 0 2px 5px rgba(0,0,0,0.3);
@@ -331,29 +412,51 @@
       background: var(--medium-green);
     }
 
-    /* RESPONSIVE */
+    /* ------------------------
+       RESPONSIVE
+       - Masque le header fixe et affiche le menu mobile
+       - Ajuste le main et le footer
+    ------------------------ */
     @media (max-width: 768px) {
       :root {
-        --header-width: 180px; /* Réduit la barre latérale en mobile */
+        --header-width: 0px; /* On ne réserve plus d'espace latéral */
       }
-      nav.main-nav ul {
-        gap: 1rem;
+      header {
+        display: none; /* On masque le header vertical */
+      }
+      .mobile-menu {
+        display: flex; /* On affiche la barre mobile */
+      }
+      nav.main-nav {
+        /* On neutralise le display flex "desktop" */
+        display: none;
+      }
+      main {
+        margin-left: 0;
+        margin-top: 60px; /* Laisse la place pour le menu mobile */
+      }
+      footer {
+        margin-left: 0;
+      }
+      .trusted-section h2 {
+        font-size: 1.1rem;
       }
       .marquee-track .logo {
-        width: 90px;
+        width: 90px; /* Réduit la taille des logos pour mobile */
       }
     }
   </style>
 </head>
+
 <body>
-  <!-- HEADER VERTICAL ASSOMBRI -->
+  <!-- HEADER (DESKTOP) -->
   <header id="header">
-    <!-- Logo cliquable avec overlay contact -->
+    <!-- Logo cliquable + overlay contact -->
     <div class="logo-container" id="logoContainer">
       <img src="images/image-03.png" alt="Logo Ysquare Consulting" data-translate="headerLogo" />
       <div class="contact-overlay">
         <p>Email: <a href="mailto:ysquare.cons@gmail.com">ysquare.cons@gmail.com</a></p>
-        <p>LinkedIn: <a href="https://www.linkedin.com/in/kenza-touimi-benjelloun-b8585892/?sendMessage=1" target="_blank">Profil</a></p>
+        <p>LinkedIn: <a href="https://www.linkedin.com/in/kenza-touimi-benjelloun-b8585892" target="_blank">Profil</a></p>
       </div>
     </div>
 
@@ -365,22 +468,35 @@
       </select>
     </div>
 
-    <!-- Navigation verticale -->
+    <!-- Navigation verticale (desktop) -->
     <nav class="main-nav">
       <ul>
         <li><a href="#home" data-translate="navHome">Accueil</a></li>
         <li><a href="#about" data-translate="navAbout">À propos</a></li>
         <li><a href="#services" data-translate="navServices">Services</a></li>
-        <li><a href="#projects" data-translate="navProjects">Projets & Études de cas</a></li>
+        <li><a href="#projects" data-translate="navProjects">Projets</a></li>
         <li><a href="#contact" data-translate="navContact">Contact</a></li>
       </ul>
     </nav>
-
-    <!-- Menu mobile (bouton) -->
-    <div class="mobile-menu">
-      <button id="menu-toggle" aria-label="Ouvrir le menu">&#9776;</button>
-    </div>
   </header>
+
+  <!-- MENU MOBILE (barre en haut) -->
+  <div class="mobile-menu">
+    <div><strong>Ysquare Consulting</strong></div>
+    <!-- Bouton hamburger -->
+    <button id="menu-toggle" aria-label="Ouvrir le menu">&#9776;</button>
+  </div>
+
+  <!-- NAV LATERAL MOBILE (slide-in depuis la droite) -->
+  <nav class="main-nav mobile" id="mobileNav">
+    <ul>
+      <li><a href="#home" data-translate="navHome">Accueil</a></li>
+      <li><a href="#about" data-translate="navAbout">À propos</a></li>
+      <li><a href="#services" data-translate="navServices">Services</a></li>
+      <li><a href="#projects" data-translate="navProjects">Projets</a></li>
+      <li><a href="#contact" data-translate="navContact">Contact</a></li>
+    </ul>
+  </nav>
 
   <!-- CONTENU PRINCIPAL -->
   <main>
@@ -518,7 +634,7 @@
           <li>
             <!-- Icône LinkedIn qui redirige vers le profil -->
             <a
-              href="https://www.linkedin.com/in/kenza-touimi-benjelloun-b8585892/?sendMessage=1"
+              href="https://www.linkedin.com/in/kenza-touimi-benjelloun-b8585892"
               target="_blank"
               aria-label="Profil LinkedIn"
             >
@@ -530,13 +646,13 @@
     </section>
   </main>
 
-  <!-- ====== FOOTER ====== -->
+  <!-- FOOTER -->
   <footer>
     <div class="footer-content">
       <p data-translate="footerText">© 2025 Ysquare Consulting - Tous droits réservés.</p>
       <div class="social-icons">
         <a
-          href="https://www.linkedin.com/in/kenza-touimi-benjelloun-b8585892/?sendMessage=1"
+          href="https://www.linkedin.com/in/kenza-touimi-benjelloun-b8585892"
           target="_blank"
           aria-label="LinkedIn"
         >
@@ -549,7 +665,7 @@
     </div>
   </footer>
 
-  <!-- Bouton Back-to-Top -->
+  <!-- BOUTON BACK-TO-TOP -->
   <button id="back-to-top" title="Back to Top">
     <img src="images/image-03.png" alt="Top" />
   </button>
@@ -557,29 +673,41 @@
   <script>
     document.addEventListener("DOMContentLoaded", () => {
       const menuToggle = document.getElementById("menu-toggle");
-      const mainNav = document.querySelector(".main-nav");
+      const mobileNav = document.getElementById("mobileNav");
+      const mainNavDesktop = document.querySelector("nav.main-nav:not(.mobile)");
       const langSelect = document.getElementById("lang-select");
       const logoContainer = document.getElementById("logoContainer");
 
-      // Menu mobile
-      if (menuToggle && mainNav) {
+      // Au chargement, on marque le body comme "loaded" pour l'effet fade-in.
+      window.addEventListener("load", () => {
+        document.body.classList.add("loaded");
+      });
+
+      // ------------------------
+      // MENU MOBILE TOGGLE
+      // ------------------------
+      if (menuToggle && mobileNav) {
         menuToggle.addEventListener("click", () => {
-          mainNav.classList.toggle("open");
+          mobileNav.classList.toggle("open");
         });
       }
 
-      // Overlay contact au clic sur le logo
+      // ------------------------
+      // LOGO : Overlay contact
+      // ------------------------
       if (logoContainer) {
         logoContainer.addEventListener("click", () => {
           logoContainer.classList.toggle("show-overlay");
         });
       }
 
-      // TRADUCTIONS
+      // ------------------------
+      // TRANSLATIONS
+      // ------------------------
       const translations = {
         fr: {
           pageTitle: "Ysquare Consulting – Driving IT & Data Transformation",
-          headerTitle: "Ysquare Consulting",
+          headerLogo: "Ysquare Consulting",
           navHome: "Accueil",
           navAbout: "À propos",
           navServices: "Services",
@@ -616,15 +744,12 @@
           projectsP: "Je suis passionné par la résolution de défis complexes et par l'assurance que les solutions IT servent réellement les objectifs business.",
           contactTitle: "Entrons en contact pour piloter la transformation ensemble",
           contactP: "🚀 Vous recherchez un partenaire de confiance pour piloter vos initiatives IT et data ? Discutons de vos besoins.",
-          contactEmailLabel: "Email :",
-          contactLinkedInLabel: "LinkedIn :",
-          contactLocationLabel: "Localisation :",
           trustedUs: "Ils nous font confiance :",
           footerText: "© 2025 Ysquare Consulting - Tous droits réservés."
         },
         en: {
           pageTitle: "Ysquare Consulting – Driving IT & Data Transformation",
-          headerTitle: "Ysquare Consulting",
+          headerLogo: "Ysquare Consulting",
           navHome: "Home",
           navAbout: "About",
           navServices: "Services",
@@ -661,9 +786,6 @@
           projectsP: "I thrive on solving highly complex challenges and ensuring IT solutions truly serve business objectives.",
           contactTitle: "Let’s connect and drive transformation together",
           contactP: "🚀 Looking for a trusted partner to lead your IT & data initiatives? I’d love to discuss your needs.",
-          contactEmailLabel: "Email:",
-          contactLinkedInLabel: "LinkedIn:",
-          contactLocationLabel: "Location:",
           trustedUs: "They trusted us:",
           footerText: "© 2025 Ysquare Consulting - All rights reserved."
         }
@@ -682,24 +804,39 @@
       }
       // Par défaut => Français
       setLanguage("fr");
+
+      // Changement de langue
       langSelect.addEventListener("change", (e) => {
         setLanguage(e.target.value);
       });
-    });
 
-    // Back-to-top & overlay logic
-    window.addEventListener("scroll", () => {
-      const backToTop = document.getElementById("back-to-top");
-      if (window.scrollY > 300) backToTop.style.display = "flex";
-      else backToTop.style.display = "none";
-    });
-    document.getElementById("back-to-top").addEventListener("click", () => {
-      window.scrollTo({ top: 0, behavior: "smooth" });
-    });
+      // ------------------------
+      // BACK-TO-TOP
+      // ------------------------
+      window.addEventListener("scroll", () => {
+        const backToTop = document.getElementById("back-to-top");
+        if (window.scrollY > 300) backToTop.style.display = "flex";
+        else backToTop.style.display = "none";
+      });
+      document.getElementById("back-to-top").addEventListener("click", () => {
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      });
 
-    // Au chargement
-    window.addEventListener("load", () => {
-      document.body.classList.add("loaded");
+      // ------------------------
+      // FADE-IN DES SECTIONS AU SCROLL
+      // ------------------------
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add("fade-in");
+          }
+        });
+      }, { threshold: 0.1 });
+
+      // On observe toutes les sections-container et la trusted-section
+      document.querySelectorAll(".section-container, .trusted-section").forEach((section) => {
+        observer.observe(section);
+      });
     });
   </script>
 </body>
